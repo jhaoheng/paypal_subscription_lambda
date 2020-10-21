@@ -1,0 +1,20 @@
+{
+    "Records": [
+      {
+        "messageId": "19dd0b57-b21e-4ac1-bd88-01bbb068cb78",
+        "receiptHandle": "MessageReceiptHandle",
+        "body": "{\"id\":\"WH-2WR32451HC0233532-67976317FL4543714\",\"create_time\":\"2014-10-23T17:23:52Z\",\"resource_type\":\"sale\",\"event_type\":\"PAYMENT.SALE.COMPLETED\",\"summary\":\"A successful sale payment was made for $ 0.48 USD\",\"resource\":{\"parent_payment\":\"PAY-1PA12106FU478450MKRETS4A\",\"update_time\":\"2014-10-23T17:23:04Z\",\"amount\":{\"total\":\"0.48\",\"currency\":\"USD\"},\"payment_mode\":\"ECHECK\",\"create_time\":\"2014-10-23T17:22:56Z\",\"clearing_time\":\"2014-10-30T07:00:00Z\",\"protection_eligibility_type\":\"ITEM_NOT_RECEIVED_ELIGIBLE,UNAUTHORIZED_PAYMENT_ELIGIBLE\",\"protection_eligibility\":\"ELIGIBLE\",\"links\":[{\"href\":\"https://api.paypal.com/v1/payments/sale/80021663DE681814L\",\"rel\":\"self\",\"method\":\"GET\"},{\"href\":\"https://api.paypal.com/v1/payments/sale/80021663DE681814L/refund\",\"rel\":\"refund\",\"method\":\"POST\"},{\"href\":\"https://api.paypal.com/v1/payments/payment/PAY-1PA12106FU478450MKRETS4A\",\"rel\":\"parent_payment\",\"method\":\"GET\"}],\"id\":\"80021663DE681814L\",\"state\":\"completed\"},\"links\":[{\"href\":\"https://api.paypal.com/v1/notifications/webhooks-events/WH-2WR32451HC0233532-67976317FL4543714\",\"rel\":\"self\",\"method\":\"GET\",\"encType\":\"application/json\"},{\"href\":\"https://api.paypal.com/v1/notifications/webhooks-events/WH-2WR32451HC0233532-67976317FL4543714/resend\",\"rel\":\"resend\",\"method\":\"POST\",\"encType\":\"application/json\"}],\"event_version\":\"1.0\"}",
+        "attributes": {
+          "ApproximateReceiveCount": "1",
+          "SentTimestamp": "1523232000000",
+          "SenderId": "123456789012",
+          "ApproximateFirstReceiveTimestamp": "1523232000001"
+        },
+        "messageAttributes": {},
+        "md5OfBody": "7b270e59b47ff90a553787216d55d91d",
+        "eventSource": "aws:sqs",
+        "eventSourceARN": "arn:aws:sqs:ap-southeast-1:123456789012:MyQueue",
+        "awsRegion": "ap-southeast-1"
+      }
+    ]
+  }

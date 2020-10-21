@@ -1,0 +1,63 @@
+{
+    "detail": {
+        "currency_code": "USD",
+        "note": "Thank you for your business.",
+        "memo": "This is a long contract",
+        "invoice_number": "",
+        "invoice_date": ""
+    },
+    "invoicer": {
+        "business_name": "developer store",
+        "name": {
+            "given_name": "Max",
+            "surname": "Hu"
+        },
+        "address": {
+            "address_line_1": "No.7, Taipei 101 Tower,",
+            "address_line_2": "Sec. 5, Xinyi Rd.,",
+            "admin_area_2": "Xinyi Dist., Taipei City 110,",
+            "admin_area_1": "Taiwan (R.O.C)",
+            "postal_code": "110",
+            "country_code": "TW"
+        },
+        "email_address": "jhaoheng-facilitator@gmail.com",
+        "phones": [
+            {
+                "country_code": "886",
+                "national_number": "0281018898",
+                "phone_type": "HOME"
+            }
+        ],
+        "website": "https://www.taipei-101.com.tw/tw/",
+        "logo_url": "https://seeklogo.com/images/T/taipei-101-logo-7E066099A8-seeklogo.com.png"
+    },
+    "primary_recipients": [
+        {
+            "billing_info": {
+                "business_name":"",
+                "name": {
+                    "given_name": "",
+                    "surname": ""
+                },
+                "email_address": "",
+                "language":"US"
+            }
+        }
+    ],
+    "items": [
+        {
+            "name": "",
+            "description": "",
+            "quantity": "",
+            "unit_amount": {
+                "currency_code": "USD",
+                "value": ""
+            },
+            "tax": {
+                "name": "Sales Tax",
+                "percent": "0"
+            },
+            "item_date":""
+        }
+    ]
+}

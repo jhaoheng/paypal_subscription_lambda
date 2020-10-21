@@ -1,0 +1,17 @@
+{
+    "WebhookReceiverLambda": {
+        "IsLocalTest": true
+    },
+    "WebhookVerifyLambda": {
+        "IsLocalTest": true
+    },
+    "WebhookProcessLambda": {
+        "IsLocalTest": true
+    },
+    "ApiSubscriptionCreateLambda": {
+        "IsLocalTest": true
+    },
+    "ApiPlansListLambda": {
+        "IsLocalTest": true
+    }
+}

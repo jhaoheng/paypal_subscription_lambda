@@ -1,0 +1,1570 @@
+{
+	"info": {
+		"_postman_id": "06118e3c-092d-4a53-8bc1-3666877eef4c",
+		"name": "paypal",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Subscription",
+			"item": [
+				{
+					"name": "Plans",
+					"item": [
+						{
+							"name": "Create plan",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{paypal_bearer_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "PayPal-Request-Id",
+										"value": "123e4567-e89b-12d3-a456-426655440020",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"product_id\": \"PROD-4RN91704DX293193D\",\n    \"name\": \"Basic Plan\",\n    \"description\": \"Basic plan\",\n    \"billing_cycles\": [\n        {\n            \"frequency\": {\n                \"interval_unit\": \"MONTH\",\n                \"interval_count\": 1\n            },\n            \"tenure_type\": \"TRIAL\",\n            \"sequence\": 1,\n            \"total_cycles\": 1\n        },\n        {\n            \"frequency\": {\n                \"interval_unit\": \"MONTH\",\n                \"interval_count\": 1\n            },\n            \"tenure_type\": \"REGULAR\",\n            \"sequence\": 2,\n            \"total_cycles\": 12,\n            \"pricing_scheme\": {\n                \"fixed_price\": {\n                    \"value\": \"10\",\n                    \"currency_code\": \"USD\"\n                }\n            }\n        }\n    ],\n    \"payment_preferences\": {\n        \"auto_bill_outstanding\": true,\n        \"setup_fee\": {\n            \"value\": \"10\",\n            \"currency_code\": \"USD\"\n        },\n        \"setup_fee_failure_action\": \"CONTINUE\",\n        \"payment_failure_threshold\": 3\n    },\n    \"taxes\": {\n        \"percentage\": \"10\",\n        \"inclusive\": false\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/v1/billing/plans",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"v1",
+										"billing",
+										"plans"
+									]
+								},
+								"description": "Create plan"
+							},
+							"response": []
+						},
+						{
+							"name": "List plans",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{paypal_bearer_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Prefer",
+										"value": "return=representation",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url}}/v1/billing/plans?total_required=true",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"v1",
+										"billing",
+										"plans"
+									],
+									"query": [
+										{
+											"key": "product_id",
+											"value": "PROD-3LP22344MM217320A",
+											"disabled": true
+										},
+										{
+											"key": "plan_ids",
+											"value": null,
+											"disabled": true
+										},
+										{
+											"key": "page_size",
+											"value": "20",
+											"disabled": true
+										},
+										{
+											"key": "page",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "total_required",
+											"value": "true"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Show plan details",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{paypal_bearer_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/v1/billing/plans/P-4JV08208FH407072RL6C5O5Y",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"v1",
+										"billing",
+										"plans",
+										"P-4JV08208FH407072RL6C5O5Y"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Subscriptions",
+					"item": [
+						{
+							"name": "Create subscription",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "7ef0d5e6-c9ca-4a35-8797-e4038ffc027c",
+										"exec": [
+											"pm.environment.set(\"plan_id\", \"P-6LR64573GW3523416L6DIKAA\");",
+											"",
+											"function uuidv4() {",
+											"  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {",
+											"    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);",
+											"    return v.toString(16);",
+											"  });",
+											"}",
+											"",
+											"pm.environment.set(\"PayPal-Request-Id\", uuidv4());"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{paypal_bearer_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "PayPal-Request-Id",
+										"value": "{{PayPal-Request-Id}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"plan_id\": \"{{plan_id}}\",\n    \"quantity\": \"1\",\n    \"subscriber\": {\n        \"name\": {\n            \"given_name\": \"John\",\n            \"surname\": \"Doe\"\n        },\n        \"email_address\": \"buyer@astra.sandbox\"\n    },\n    \"application_context\": {\n        \"brand_name\": \"max-test\",\n        \"locale\": \"en-US\",\n        \"shipping_preference\": \"NO_SHIPPING\",\n        \"user_action\": \"SUBSCRIBE_NOW\",\n        \"payment_method\": {\n            \"payer_selected\": \"PAYPAL\",\n            \"payee_preferred\": \"IMMEDIATE_PAYMENT_REQUIRED\"\n        },\n        \"return_url\": \"https://www.google.com/\",\n        \"cancel_url\": \"https://tw.yahoo.com/\"\n    },\n    \"custom_id\":\"40d773f5-a4fa-4a32-8cc6-65a1d1fba17c\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/v1/billing/subscriptions",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"v1",
+										"billing",
+										"subscriptions"
+									]
+								},
+								"description": "負責建立訂閱的用戶"
+							},
+							"response": []
+						},
+						{
+							"name": "Cancel subscription",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "f1ad1757-1a23-47bd-a76a-4a19d3624830",
+										"exec": [
+											"pm.environment.set(\"Subscription_ID\", \"I-EYRATGVAURDJ\");"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{paypal_bearer_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"reason\": \"Not satisfied with the service\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/v1/billing/subscriptions/{{Subscription_ID}}/cancel",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"v1",
+										"billing",
+										"subscriptions",
+										"{{Subscription_ID}}",
+										"cancel"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Suspend subscription",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "b694a6b2-b546-4645-bf22-adff34b8e8a9",
+										"exec": [
+											"pm.environment.set(\"Subscription_ID\", \"I-3AS6YF4CYLDN\");"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{paypal_bearer_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"reason\": \"Item out of stock\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/v1/billing/subscriptions/{{Subscription_ID}}/suspend",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"v1",
+										"billing",
+										"subscriptions",
+										"{{Subscription_ID}}",
+										"suspend"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Activate subscription",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "7a017504-ef6c-4f1a-9b18-1c938fd76178",
+										"exec": [
+											"pm.environment.set(\"Subscription_ID\", \"I-3AS6YF4CYLDN\");"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{paypal_bearer_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"reason\": \"Reactivating the subscription\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/v1/billing/subscriptions/{{Subscription_ID}}/activate",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"v1",
+										"billing",
+										"subscriptions",
+										"{{Subscription_ID}}",
+										"activate"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Capture authorized payment on subscription",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "824fc416-9ec4-469a-ab97-6a2538604b6a",
+										"exec": [
+											"pm.environment.set(\"Subscription_ID\", \"I-4EY29CDTFF9P\");",
+											"",
+											"// function uuidv4() {",
+											"//   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {",
+											"//     var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);",
+											"//     return v.toString(16);",
+											"//   });",
+											"// }",
+											"",
+											"// pm.environment.set(\"PayPal-Request-Id\", uuidv4());"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{paypal_bearer_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "PayPal-Request-Id",
+										"value": "{{PayPal-Request-Id}}",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"note\": \"Charging as the balance reached the limit\",\n  \"capture_type\": \"OUTSTANDING_BALANCE\",\n  \"amount\": {\n    \"currency_code\": \"USD\",\n    \"value\": \"1\"\n  }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/v1/billing/subscriptions/{{Subscription_ID}}/capture",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"v1",
+										"billing",
+										"subscriptions",
+										"{{Subscription_ID}}",
+										"capture"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "List transactions for subscription",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{paypal_bearer_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/v1/billing/subscriptions/{{Subscription_ID}}/transactions?start_time=2020-01-21T07:50:20.940Z&end_time=2021-08-21T07:50:20.940Z",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"v1",
+										"billing",
+										"subscriptions",
+										"{{Subscription_ID}}",
+										"transactions"
+									],
+									"query": [
+										{
+											"key": "start_time",
+											"value": "2020-01-21T07:50:20.940Z"
+										},
+										{
+											"key": "end_time",
+											"value": "2021-08-21T07:50:20.940Z"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Show subscription details",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{paypal_bearer_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/v1/billing/subscriptions/I-4EY29CDTFF9P",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"v1",
+										"billing",
+										"subscriptions",
+										"I-4EY29CDTFF9P"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Catalog Products",
+			"item": [
+				{
+					"name": "Products",
+					"item": [
+						{
+							"name": "Create product",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{paypal_bearer_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "PayPal-Request-Id",
+										"value": "123e4567-e89b-12d3-a456-426655440020",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"測試帳號_產品_1\",\n    \"description\": \"總之就是測試\",\n    \"type\": \"SERVICE\",\n    \"category\": \"SOFTWARE\",\n    \"image_url\": \"https://example.com/streaming.jpg\",\n    \"home_url\": \"https://example.com/home\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/v1/catalogs/products",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"v1",
+										"catalogs",
+										"products"
+									]
+								},
+								"description": "Create product"
+							},
+							"response": []
+						},
+						{
+							"name": "List products",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{paypal_bearer_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/v1/catalogs/products?page_size=20&page=1&total_required=true",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"v1",
+										"catalogs",
+										"products"
+									],
+									"query": [
+										{
+											"key": "page_size",
+											"value": "20"
+										},
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "total_required",
+											"value": "true"
+										}
+									]
+								},
+								"description": "List products"
+							},
+							"response": []
+						},
+						{
+							"name": "Update product",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "b42cb273-f830-4d36-b2c5-92c2fd12776b",
+										"exec": [
+											"pm.environment.set(\"product_id\", \"PROD-3LP22344MM217320A\");"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{paypal_bearer_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "[\n  {\n    \"op\": \"replace\",\n    \"path\": \"/description\",\n    \"value\": \"Premium video streaming service\"\n  }\n]",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/v1/catalogs/products/{{product_id}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"v1",
+										"catalogs",
+										"products",
+										"{{product_id}}"
+									]
+								},
+								"description": "只能更新以下類別, 建議直接在 console 更改\n- description\n- category\n- image_url\n- home_url"
+							},
+							"response": []
+						},
+						{
+							"name": "Show product details",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "1eef2c4e-60a6-4073-a762-c402b8cd0250",
+										"exec": [
+											"pm.environment.set(\"product_id\", \"PROD-3LP22344MM217320A\");"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{paypal_bearer_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/v1/catalogs/products/{{product_id}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"v1",
+										"catalogs",
+										"products",
+										"{{product_id}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Invoicing",
+			"item": [
+				{
+					"name": "invoices",
+					"item": [
+						{
+							"name": "Generate invoice number",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{paypal_bearer_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/v2/invoicing/generate-next-invoice-number",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"v2",
+										"invoicing",
+										"generate-next-invoice-number"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create draft invoice",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "2bbdc867-eb98-4f4e-a448-79e572930f13",
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "a78f0076-e508-4a27-a0ac-16f40a2c4325",
+										"exec": [
+											"var jsonData = JSON.parse(responseBody);",
+											"href = jsonData.href;",
+											"var res = href.split(\"/\");",
+											"invoice_id = res[res.length - 1];",
+											"pm.environment.set(\"invoice_id\", invoice_id);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{paypal_bearer_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"detail\": {\n        \"currency_code\": \"USD\",\n        \"note\": \"Thank you for your business.\",\n        \"memo\": \"This is a long contract\",\n        \"invoice_number\": \"0018\",\n        \"invoice_date\": \"2020-01-13\"\n    },\n    \"invoicer\": {\n        \"business_name\": \"developer store\",\n        \"name\": {\n            \"given_name\": \"Max\",\n            \"surname\": \"Hu\"\n        },\n        \"address\": {\n            \"address_line_1\": \"No.7, Taipei 101 Tower,\",\n            \"address_line_2\": \"Sec. 5, Xinyi Rd.,\",\n            \"admin_area_2\": \"Xinyi Dist., Taipei City 110,\",\n            \"admin_area_1\": \"Taiwan (R.O.C)\",\n            \"postal_code\": \"110\",\n            \"country_code\": \"TW\"\n        },\n        \"email_address\": \"jhaoheng-facilitator@gmail.com\",\n        \"phones\": [\n            {\n                \"country_code\": \"886\",\n                \"national_number\": \"0281018898\",\n                \"phone_type\": \"HOME\"\n            }\n        ],\n        \"website\": \"https://www.taipei-101.com.tw/tw/\",\n        \"logo_url\": \"https://seeklogo.com/images/T/taipei-101-logo-7E066099A8-seeklogo.com.png\"\n    },\n    \"primary_recipients\": [\n        {\n            \"billing_info\": {\n                \"business_name\":\"buyer business\",\n                \"name\": {\n                    \"given_name\": \"Stephanie\",\n                    \"surname\": \"Meyers\"\n                },\n                \"email_address\": \"jhaoheng@gmail.com\",\n                \"language\":\"us\"\n            }\n        }\n    ],\n    \"items\": [\n        {\n            \"name\": \"IT Services\",\n            \"description\": \"Good Job.\",\n            \"quantity\": \"1\",\n            \"unit_amount\": {\n                \"currency_code\": \"USD\",\n                \"value\": \"50.00\"\n            },\n            \"tax\": {\n                \"name\": \"Sales Tax\",\n                \"percent\": \"7.25\"\n            },\n            \"Item_date\":\"2020-01-13\"\n        }\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/v2/invoicing/invoices",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"v2",
+										"invoicing",
+										"invoices"
+									]
+								},
+								"description": "注意 : invoicer.email_address 必須要是正確的 business 帳戶"
+							},
+							"response": []
+						},
+						{
+							"name": "Show invoice details",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{paypal_bearer_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/v2/invoicing/invoices/{{invoice_id}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"v2",
+										"invoicing",
+										"invoices",
+										"{{invoice_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Send invoice",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{paypal_bearer_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"send_to_invoicer\": true,\n  \"send_to_recipient\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/v2/invoicing/invoices/{{invoice_id}}/send",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"v2",
+										"invoicing",
+										"invoices",
+										"{{invoice_id}}",
+										"send"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "List invoices",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{paypal_bearer_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/v2/invoicing/invoices?total_required=true",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"v2",
+										"invoicing",
+										"invoices"
+									],
+									"query": [
+										{
+											"key": "total_required",
+											"value": "true"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Record payment for invoice (將發票登記為已付款)",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{paypal_bearer_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"method\": \"PAYPAL\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/v2/invoicing/invoices/{{invoice_id}}/payments",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"v2",
+										"invoicing",
+										"invoices",
+										"{{invoice_id}}",
+										"payments"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Payments",
+			"item": [
+				{
+					"name": "Authorizations",
+					"item": [
+						{
+							"name": "Show details for authorized payment",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{paypal_bearer_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/v2/payments/authorizations/{{authorization_id}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"v2",
+										"payments",
+										"authorizations",
+										"{{authorization_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Capture authorized payment",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{paypal_bearer_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "PayPal-Request-Id",
+										"value": "123e4567-e89b-12d3-a456-426655440010",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"amount\": {\n    \"value\": \"10.99\",\n    \"currency_code\": \"USD\"\n  },\n  \"invoice_id\": \"INVOICE-123\",\n  \"final_capture\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/v2/payments/authorizations/{{authorization_id}}/capture",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"v2",
+										"payments",
+										"authorizations",
+										"{{authorization_id}}",
+										"capture"
+									]
+								},
+								"description": "取得已授權的付款資訊最新狀態\n若成功, paypal 會返回該筆訂單最近的 status\n- PayPal-Request-Id"
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "v1/Sale",
+					"item": [
+						{
+							"name": "https://api.sandbox.paypal.com/v1/payments/sale/3JB94146PS2176013",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{paypal_bearer_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/v1/payments/sale/91C80143BN890280R",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"v1",
+										"payments",
+										"sale",
+										"91C80143BN890280R"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "Create order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "bd6751ce-0b6b-42e8-b0f3-eed39aa15c29",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"pm.environment.set(\"order_id\", jsonData.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{paypal_bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"intent\": \"CAPTURE\",\n    \"purchase_units\": [\n        {\n            \"amount\": {\n                \"currency_code\": \"USD\",\n                \"value\": \"100.00\"\n            },\n            \"payee\":{\n                \"email_address\":\"jhaoheng-facilitator@gmail.com\"\n            }\n        }\n    ],\n    \"application_context\": {\n        \"brand_name\": \"max\",\n        \"locale\": \"ja-JP\",\n        \"shipping_preference\": \"NO_SHIPPING\",\n        \"return_url\": \"https://google.com\",\n        \"cancel_url\": \"https://google.com\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/v2/checkout/orders",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v2",
+								"checkout",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show order details",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{paypal_bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/v2/checkout/orders/{{order_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v2",
+								"checkout",
+								"orders",
+								"{{order_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Capture payment for order(若 order = capture)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{paypal_bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"application_context\": {\n        \"brand_name\": \"max\",\n        \"locale\": \"ja-JP\",\n        \"shipping_preference\": \"NO_SHIPPING\",\n        \"return_url\": \"https://google.com\",\n        \"cancel_url\": \"https://google.com\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/v2/checkout/orders/{{order_id}}/capture",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v2",
+								"checkout",
+								"orders",
+								"{{order_id}}",
+								"capture"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Authorize payment for order(若 order = authorize)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{paypal_bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"application_context\": {\n        \"brand_name\": \"max\",\n        \"locale\": \"ja-JP\",\n        \"shipping_preference\": \"NO_SHIPPING\",\n        \"return_url\": \"https://google.com\",\n        \"cancel_url\": \"https://google.com\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/v2/checkout/orders/{{order_id}}/authorize",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v2",
+								"checkout",
+								"orders",
+								"{{order_id}}",
+								"authorize"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Webhooks",
+			"item": [
+				{
+					"name": "Verify webhook signature",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{paypal_bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"webhook_id\":\"00045589X3819641E\",\"auth_algo\":\"SHA256withRSA\",\"cert_url\":\"https://api.paypal.com/v1/notifications/certs/CERT-360caa42-fca2a594-5edc0ebc\",\"transmission_id\":\"5a286340-12bc-11eb-910a-253df5ae52cd\", \"transmission_sig\":\"PT4EFeRaVIY2mc+LeBPC5PKq9zIlKtE4YtaqLT3nksaTexTfUiRykcqV1RKQLnxh3xVycdbKpblstrwg5tdHWqp/gmkl7A6oZAi0VAVUm1V6I494Xt4P+cNvxhdyaXgoeyqOxFFtcKYjaPk1AwM2UboZUmBlOH8roqTNlEJMYGHvzlnoyrVbXSlijOn3L5zdLQZXhwaDOkdVJcFb+Dqi21eIC6TyX8YuBnHG7fszZVzG74g+lJsnhGUihaV2bOSMbaTgtOYwRZFgluBVtQhN0IdFZK6Nz7NGa0KyalnERZqMbDZGUPGYovxkmGoBrTh2WVvxAYWhP4UDA8OrjfLDTQ==\", \"transmission_time\":\"2020-10-20T10:09:34Z\", \"webhook_event\":{\"id\":\"WH-4PF36571UC876844F-6YD328096E9604355\",\"event_version\":\"1.0\",\"create_time\":\"2020-10-20T10:09:30.941Z\",\"resource_type\":\"subscription\",\"resource_version\":\"2.0\",\"event_type\":\"BILLING.SUBSCRIPTION.CREATED\",\"summary\":\"Subscription created\",\"resource\":{\"start_time\":\"2020-10-20T10:10:30Z\",\"quantity\":\"1\",\"subscriber\":{\"name\":{\"given_name\":\"max\",\"surname\":\"hu\"},\"email_address\":\"max@astra.cloud\"},\"create_time\":\"2020-10-20T10:09:30Z\",\"custom_id\":\"max-custom-idhello\",\"links\":[{\"href\":\"https://www.paypal.com/webapps/billing/subscriptions?ba_token=BA-5NU89472KP294771F\",\"rel\":\"approve\",\"method\":\"GET\"},{\"href\":\"https://api.paypal.com/v1/billing/subscriptions/I-Y2DJ15U5VKA5\",\"rel\":\"edit\",\"method\":\"PATCH\"},{\"href\":\"https://api.paypal.com/v1/billing/subscriptions/I-Y2DJ15U5VKA5\",\"rel\":\"self\",\"method\":\"GET\"}],\"id\":\"I-Y2DJ15U5VKA5\",\"plan_overridden\":false,\"plan_id\":\"P-3C9505567S506292EL6GTKTY\",\"status\":\"APPROVAL_PENDING\"},\"links\":[{\"href\":\"https://api.paypal.com/v1/notifications/webhooks-events/WH-4PF36571UC876844F-6YD328096E9604355\",\"rel\":\"self\",\"method\":\"GET\"},{\"href\":\"https://api.paypal.com/v1/notifications/webhooks-events/WH-4PF36571UC876844F-6YD328096E9604355/resend\",\"rel\":\"resend\",\"method\":\"POST\"}]}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/v1/notifications/verify-webhook-signature",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"notifications",
+								"verify-webhook-signature"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Simulate webhook event",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{paypal_bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"webhook_id\": \"7U092341DG854962C\",\n    \"url\": \"https://w9mdm89c76.execute-api.ap-southeast-1.amazonaws.com/Prod/receiver\",\n    \"event_type\": \"BILLING.PLAN.ACTIVATED\",\n    \"resource_version\": \"2.0\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/v1/notifications/simulate-event",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"notifications",
+								"simulate-event"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List webhooks",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{paypal_bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/v1/notifications/webhooks",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"notifications",
+								"webhooks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show webhook details",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{paypal_bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/v1/notifications/webhooks/41K81405AG5245301",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"notifications",
+								"webhooks",
+								"41K81405AG5245301"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Transaction Search",
+			"item": [
+				{
+					"name": "List transaction",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{paypal_bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/v1/reporting/transactions?transaction_id=3JB94146PS2176013&start_date=2020-10-01T00:00:00-0700&end_date=2020-10-30T23:59:59-0700&fields=all",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"reporting",
+								"transactions"
+							],
+							"query": [
+								{
+									"key": "transaction_id",
+									"value": "3JB94146PS2176013"
+								},
+								{
+									"key": "start_date",
+									"value": "2020-10-01T00:00:00-0700"
+								},
+								{
+									"key": "end_date",
+									"value": "2020-10-30T23:59:59-0700"
+								},
+								{
+									"key": "fields",
+									"value": "all"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "/v1/oauth2/token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "12afb52d-b81a-4ac0-853d-5d800e492ddd",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"paypal_bearer_token\", jsonData.access_token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{secret}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{client_id}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept-Language",
+						"value": "en_US",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "text"
+						}
+					],
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/v1/oauth2/token",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"v1",
+						"oauth2",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/v2/checkout/orders",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{paypal_bearer_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"intent\": \"CAPTURE\",\n  \"purchase_units\": [\n    {\n      \"amount\": {\n        \"currency_code\": \"USD\",\n        \"value\": \"100.00\"\n      }\n    }\n  ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/v2/checkout/orders",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"v2",
+						"checkout",
+						"orders"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

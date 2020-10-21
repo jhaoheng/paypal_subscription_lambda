@@ -1,0 +1,311 @@
+# flow : 
+# ├── api
+# ├── paypal_event -> webhookReceiver -> sns -> webhookVerify -> sqs
+# │   ├── (if success) sqs -> webhookProcess -> sns -> Administor
+# │   ├── (if fail)    sqs (timeout, error)
+
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Paypal services
+
+Globals:
+  Function:
+    Timeout: 30
+    Runtime: go1.x
+    MemorySize: 128
+    DeadLetterQueue: 
+      Type: SQS
+      TargetArn: !GetAtt ErrorQueue.Arn
+    Environment:
+      Variables:
+        IsLocalTest: false
+
+Parameters:
+  # Domain
+  Route53HostedZoneId:
+    Type: String
+    Default: Z02842161161RJQP46Q2C
+  DomainName:
+    Description: set your paypal service's Domain Name
+    Type: String
+    Default: xxx.test.com
+  DomainSSLCertArn:
+    Type: String
+    Default: arn:aws:acm:ap-southeast-1:xxxxxxxxxx:certificate/88c6c241-02b5-41bc-bfa7-ed069d059703
+
+  # Paypal
+  PaypalApi:
+    Description: Paypal request api
+    Type: String
+    Default: https://api.sandbox.paypal.com # for sandbox
+    #    Default: https://api.paypal.com   # for live
+  PaypalAppClientId:
+    Description: ""
+    Type: String
+    Default: "PaypalAppClientId"
+  PaypalAppSecret:
+    Description: ""
+    Type: String
+    Default: "PaypalAppSecret"
+  PaypalAppWebhookId:
+    Description: ""
+    Type: String
+    Default: "PaypalAppWebhookId"
+  PaypalAppBrandName:
+    Description: ""
+    Type: String
+    Default: "PaypalAppBrandName"
+  PaypalAppReturnUrl:
+    Description: ""
+    Type: String
+    Default: "PaypalAppReturnUrl"
+  PaypalAppCancelUrl:
+    Description: ""
+    Type: String
+    Default: "PaypalAppCancelUrl"
+
+  # SQS
+  VerifiedQueueName:
+    Description: Verified paypal Queue
+    Type: String
+    Default: paypal-webhook-verified-test
+  ErrorQueueName:
+    Description: Error Queue
+    Type: String
+    Default: paypal-webhook-errors-test
+  # SNS 
+  InternalNotificationName:
+    Description: Internal SNS
+    Type: String
+    Default: paypal-unverified-test
+  EventFinishNotificationName:
+    Description: External SNS, to slack or email, notify Administrator
+    Type: String
+    Default: paypal-webhook-event-finish-test
+
+Outputs:
+  WebhookReceiverURL:
+    Description: Paypal, webhook url
+    Value: !Sub
+      - https://${Domain}/webhook/receiver
+      - { Domain: !Ref DomainName }
+  ApiPlansList:
+    Description: Paypal, api
+    Value: !Sub
+      - https://${Domain}/plans/list
+      - { Domain: !Ref DomainName }
+  ApiSubscriptionCreate:
+    Description: Paypal, api
+    Value: !Sub
+      - https://${Domain}/Subscription/Create
+      - { Domain: !Ref DomainName }
+
+Resources:
+## Lambda
+  WebhookReceiverLambda:
+    Type: AWS::Serverless::Function 
+    Properties:
+      FunctionName: "paypal-webhook-receiver"
+      Description: "[paypal] worker, receive paypal webhook event"
+      Policies:
+        - Statement:
+            - Sid: SNSCustomPolicy
+              Effect: Allow
+              Action:
+                - sns:*
+              Resource: '*'
+      CodeUri: apps/webhookReceiver
+      Handler: webhookReceiver
+      Events:
+        ReceiverApi:
+          Type: Api
+          Properties:
+            Path: /webhook/receiver
+            Method: POST
+            RestApiId: !Ref PaypalApiGateway
+      Environment: 
+        Variables:
+          InternalNotificationArn: !Ref InternalNotification
+
+  WebhookVerifyLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: "paypal-webhook-verify"
+      Description: "[paypal] worker, verify paypal and send to sqs"
+      Policies:
+        - Statement:
+            - Sid: SQSCustomPolicy
+              Effect: Allow
+              Action:
+                - sqs:*
+              Resource: '*'
+      CodeUri: apps/webhookVerify
+      Handler: webhookVerify
+      Events:
+        SNS:
+          Type: SNS
+          Properties: 
+            Topic: !Ref InternalNotification
+      Environment: 
+        Variables:
+          # paypal services
+          Paypal_Api: !Ref PaypalApi
+          Paypal_App_Client_Id: !Ref PaypalAppClientId
+          Paypal_App_Secret: !Ref PaypalAppSecret
+          Paypal_App_Webhook_Id: !Ref PaypalAppWebhookId
+          Paypal_App_Brand_Name: !Ref PaypalAppBrandName
+          Paypal_App_Return_Url: !Ref PaypalAppReturnUrl
+          Paypal_App_Cancel_Url: !Ref PaypalAppCancelUrl
+          # sqs
+          VerifiedQueueUrl: !Ref VerifiedQueue
+          ErrorQueueUrl: !Ref ErrorQueue
+
+  
+  WebhookProcessLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: "paypal-webhook-process"
+      Description: "[paypal] worker, process event from sqs"
+      CodeUri: apps/webhookProcess
+      Handler: webhookProcess
+      Events:
+        SQS:
+          Type: SQS
+          Properties: 
+            Queue: !GetAtt VerifiedQueue.Arn
+            BatchSize: 4
+            Enabled: true
+      Policies:
+        - SQSPollerPolicy:
+            QueueName: !Ref VerifiedQueueName
+        - Statement:
+            - Sid: SNSCustomPolicy
+              Effect: Allow
+              Action:
+                - sns:*
+              Resource: '*'
+      Environment: 
+        Variables:
+          # paypal services
+          Paypal_Api: !Ref PaypalApi
+          Paypal_App_Client_Id: !Ref PaypalAppClientId
+          Paypal_App_Secret: !Ref PaypalAppSecret
+          Paypal_App_Webhook_Id: !Ref PaypalAppWebhookId
+          Paypal_App_Brand_Name: !Ref PaypalAppBrandName
+          Paypal_App_Return_Url: !Ref PaypalAppReturnUrl
+          Paypal_App_Cancel_Url: !Ref PaypalAppCancelUrl
+          # sqs
+          VerifiedQueueUrl: !Ref VerifiedQueue
+          # sns
+          EventFinishNotificationArn: !Ref EventFinishNotification
+  
+  ApiSubscriptionCreateLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: "paypal-api-subscription-create"
+      Description: "[paypal] generate draft-link of customer subscription"
+      CodeUri: apps/apiSubscriptionCreate
+      Handler: apiSubscriptionCreate
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /subscription/create
+            Method: post
+            RestApiId: !Ref PaypalApiGateway
+      Environment: 
+        Variables:
+          # paypal services
+          Paypal_Api: !Ref PaypalApi
+          Paypal_App_Client_Id: !Ref PaypalAppClientId
+          Paypal_App_Secret: !Ref PaypalAppSecret
+          Paypal_App_Webhook_Id: !Ref PaypalAppWebhookId
+          Paypal_App_Brand_Name: !Ref PaypalAppBrandName
+          Paypal_App_Return_Url: !Ref PaypalAppReturnUrl
+          Paypal_App_Cancel_Url: !Ref PaypalAppCancelUrl
+
+  ApiPlansListLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: "paypal-api-plans-list"
+      Description: "[paypal] List all plans"
+      CodeUri: apps/apiPlansList
+      Handler: apiPlansList
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /plans/list
+            Method: get
+            RestApiId: !Ref PaypalApiGateway
+      Environment: 
+        Variables:
+          # paypal services
+          Paypal_Api: !Ref PaypalApi
+          Paypal_App_Client_Id: !Ref PaypalAppClientId
+          Paypal_App_Secret: !Ref PaypalAppSecret
+          Paypal_App_Webhook_Id: !Ref PaypalAppWebhookId
+          Paypal_App_Brand_Name: !Ref PaypalAppBrandName
+          Paypal_App_Return_Url: !Ref PaypalAppReturnUrl
+          Paypal_App_Cancel_Url: !Ref PaypalAppCancelUrl
+
+
+
+## SQS
+  VerifiedQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Ref VerifiedQueueName
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt ErrorQueue.Arn
+        maxReceiveCount: 3
+
+  ErrorQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Ref ErrorQueueName 
+      MessageRetentionPeriod: 1209600
+
+
+## SNS
+  InternalNotification:
+    Type: "AWS::SNS::Topic"
+    Properties: 
+      DisplayName: !Ref InternalNotificationName
+      TopicName: !Ref InternalNotificationName
+  InternalNotificationSubscription:
+    Type: AWS::SNS::Subscription
+    Properties: 
+      Endpoint: !Join
+        - ':'
+        - - 'arn:aws:lambda'
+          - !Ref AWS::Region
+          - !Ref 'AWS::AccountId'
+          - 'function'
+          - !Ref WebhookVerifyLambda
+      Protocol: lambda
+      TopicArn: !Ref InternalNotification
+  
+  EventFinishNotification:
+    Type: "AWS::SNS::Topic"
+    Properties: 
+      DisplayName: !Ref EventFinishNotificationName
+      TopicName: !Ref EventFinishNotificationName
+
+
+## API Gateway
+  PaypalApiGateway:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: Paypal-Services
+      StageName: Prod
+      # EndpointConfiguration:
+      #   Type: REGIONAL
+      Domain:
+        DomainName: !Ref DomainName
+        CertificateArn: !Ref DomainSSLCertArn
+        EndpointConfiguration: REGIONAL
+        Route53:
+          HostedZoneId: !Ref Route53HostedZoneId
+          EvaluateTargetHealth: true

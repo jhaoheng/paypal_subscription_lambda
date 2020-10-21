@@ -1,0 +1,73 @@
+{
+	"info": {
+		"_postman_id": "4feccb02-da02-44c5-af25-54d6873af526",
+		"name": "paypal-integration",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "list plans",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/plans/list",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"plans",
+						"list"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create subscription",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"plan_id\":\"P-3C9505567S506292EL6GTKTY\",\n    \"custom_id\":\"max-custom-id\",\n    \"give_name\":\"max\",\n    \"surname\":\"hulo\",\n    \"email_address\":\"max@googler.oneday\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/Subscription/Create",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"Subscription",
+						"Create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "webhook-receiver",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/webhook/receiver",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"webhook",
+						"receiver"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

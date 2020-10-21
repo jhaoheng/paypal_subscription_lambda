@@ -1,0 +1,31 @@
+{
+    "Records": [
+      {
+        "EventVersion": "1.0",
+        "EventSubscriptionArn": "arn:aws:sns:us-east-2:123456789012:sns-lambda:21be56ed-a058-49f5-8c98-aedd2564c486",
+        "EventSource": "aws:sns",
+        "Sns": {
+          "SignatureVersion": "1",
+          "Timestamp": "2019-01-02T12:45:07.000Z",
+          "Signature": "tcc6faL2yUC6dgZdmrwh1Y4cGa/ebXEkAi6RibDsvpi+tE/1+82j...65r==",
+          "SigningCertUrl": "https://sns.us-east-2.amazonaws.com/SimpleNotificationService-ac565b8b1a6c5d002d285f9598aa1d9b.pem",
+          "MessageId": "95df01b4-ee98-5cb9-9903-4c221d41eb5e",
+          "Message": "{\"body\":{\"create_time\":\"2018-19-12T22:20:32.000Z\",\"event_type\":\"BILLING.PLAN.ACTIVATED\",\"event_version\":\"1.0\",\"id\":\"WH-55TG7562XN2588878-8YH955435R661687G\",\"links\":[{\"href\":\"https://api.paypal.com/v1/notifications/webhooks-events/WH-55TG7562XN2588878-8YH955435R661687G\",\"method\":\"GET\",\"rel\":\"self\"},{\"href\":\"https://api.paypal.com/v1/notifications/webhooks-events/WH-55TG7562XN2588878-8YH955435R661687G/resend\",\"method\":\"POST\",\"rel\":\"resend\"}],\"resource\":{\"billing_cycles\":[{\"frequency\":{\"interval_count\":1,\"interval_unit\":\"MONTH\"},\"pricing_scheme\":{\"fixed_price\":{\"currency_code\":\"USD\",\"value\":\"50\"},\"tier_mode\":\"VOLUME\",\"tiers\":[{\"amount\":{\"currency_code\":\"USD\",\"value\":\"100\"},\"ending_quantity\":\"1000\",\"starting_quantity\":\"1\"},{\"amount\":{\"currency_code\":\"USD\",\"value\":\"200\"},\"starting_quantity\":\"1001\"}]},\"sequence\":1,\"tenure_type\":\"TRIAL\",\"total_cycles\":1},{\"frequency\":{\"interval_count\":1,\"interval_unit\":\"MONTH\"},\"pricing_scheme\":{\"fixed_price\":{\"currency_code\":\"USD\",\"value\":\"100\"},\"tier_mode\":\"VOLUME\",\"tiers\":[{\"amount\":{\"currency_code\":\"USD\",\"value\":\"300\"},\"ending_quantity\":\"1000\",\"starting_quantity\":\"1\"},{\"amount\":{\"currency_code\":\"USD\",\"value\":\"1000\"},\"starting_quantity\":\"1001\"}]},\"sequence\":2,\"tenure_type\":\"REGULAR\",\"total_cycles\":12}],\"create_time\":\"2018-12-10T21:20:49Z\",\"description\":\"Zoho Marketing Campaign Plan\",\"id\":\"P-7GL4271244454362WXNWU5NQ\",\"links\":[{\"href\":\"https://api.paypal.com/v1/billing/plans/P-5ML4271244454362WXNWU5NQ\",\"method\":\"GET\",\"rel\":\"self\"},{\"href\":\"https://api.paypal.com/v1/billing/plans/P-5ML4271244454362WXNWU5NQ\",\"method\":\"PATCH\",\"rel\":\"edit\"}],\"name\":\"Zoho Marketing Campaign  Plan\",\"payment_preferences\":{\"auto_bill_outstanding\":true,\"payment_failure_threshold\":3,\"service_type\":\"PREPAID\",\"setup_fee\":{\"currency_code\":\"USD\",\"value\":\"10\"},\"setup_fee_failure_action\":\"CONTINUE\"},\"product_id\":\"PROD-XXCD1234QWER65782\",\"status\":\"ACTIVE\",\"taxes\":{\"inclusive\":false,\"percentage\":\"10\"},\"update_time\":\"2018-12-10T21:20:49Z\",\"usage_type\":\"LICENSED\"},\"resource_type\":\"plan\",\"resource_version\":\"2.0\",\"summary\":\"A billing plan was activated.\"},\"header\":{\"PAYPAL-AUTH-ALGO\":\"SHA256withRSA\",\"PAYPAL-AUTH-VERSION\":\"v2\",\"PAYPAL-CERT-URL\":\"https://api.paypal.com/v1/notifications/certs/CERT-360caa42-fca2a594-5edc0ebc\",\"PAYPAL-TRANSMISSION-ID\":\"58243060-0e3e-11eb-8282-c109c51d2419\",\"PAYPAL-TRANSMISSION-SIG\":\"H9EmNtJLnxxT++qHjF6sxKYDZi34BEeXM2p2uoMsH0ipi512e8PlqQHvoI2Bo+dR70J+QBpEyoCZKPoitwtauWzQXkzFoH/Cw47lYRcIf8mHno+VUjtRM192atnZDt0en032Ejglgc5KlVO3WGl+SjxGE+ISslYOq1NA1LUYE8Dw5vIKp68MDqTgdsSP1klL3t7VCtEyaC9ocavc8TjDUE66Hi3COA/pb5d8CbS0Uzog8gIxeAI0yMnqrc86Df2JoIekZu5utnxBqh2kKQX2fpMMn3/BocCzDnpTyGbzCYHJq5E2HZXI3aq+x63Asvfmb9Uink6+1x4+hbuWYQxAjQ==\",\"PAYPAL-TRANSMISSION-TIME\":\"2020-10-14T16:57:29Z\"}}",
+          "MessageAttributes": {
+            "Test": {
+              "Type": "String",
+              "Value": "TestString"
+            },
+            "TestBinary": {
+              "Type": "Binary",
+              "Value": "TestBinary"
+            }
+          },
+          "Type": "Notification",
+          "UnsubscribeUrl": "https://sns.us-east-2.amazonaws.com/?Action=Unsubscribe&amp;SubscriptionArn=arn:aws:sns:us-east-2:123456789012:test-lambda:21be56ed-a058-49f5-8c98-aedd2564c486",
+          "TopicArn":"arn:aws:sns:us-east-2:123456789012:sns-lambda",
+          "Subject": "TestInvoke"
+        }
+      }
+    ]
+  }
