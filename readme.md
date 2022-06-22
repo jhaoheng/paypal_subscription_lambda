@@ -14,11 +14,14 @@
 ```
 
 # flow
+
+![flow](./docs/flow.svg)
+
 ```bash
 - api
-    1. 列出所有訂閱方案
-    2. 用戶選擇方案, 轉跳到 paypal 付款頁面
-    3. 用戶
+    1. 列出所有訂閱方案 (apiPlansList)
+    2. 用戶選擇方案 (apiSubscriptionCreate)
+        - 轉跳到 paypal 付款頁面
         - 完成付款, 跳轉回付款完成頁面, 等待系統完成付款確認
         - 付款取消, 跳轉回取消頁面
 - webhook
